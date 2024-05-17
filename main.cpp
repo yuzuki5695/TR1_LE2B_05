@@ -3,8 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-const char kWindowTitle[] = "LE2B_05_オノデラ_ユヅキ_タイトル";
-
+const char kWindowTitle[] = "LE2B_05_オノデラ_ユヅキ";
 
 /* --- Sine --- */
 float EaseInSine(float t) {
@@ -23,8 +22,6 @@ float EaseInOutQuint(float t) {
 		? 16.0f * t * t * t * t * t
 		: 1.0f - powf(-2.0f * t + 2.0f, 5.0f) / 2.0f;
 }
-
-
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
