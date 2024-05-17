@@ -5,7 +5,7 @@
 
 const char kWindowTitle[] = "LE2B_05_オノデラ_ユヅキ";
 
-/* --- Sine --- */
+
 float EaseInSine(float t) {
 	return 1.0f - cosf((t * static_cast<float>(M_PI)) / 2.0f);
 }
