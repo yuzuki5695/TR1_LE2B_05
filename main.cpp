@@ -25,29 +25,6 @@ float EaseInOutQuint(float t) {
 }
 
 
-//バウンド
-float EaseOutBounce(float t) {
-	const float n1 = 7.5625f;
-	const float d1 = 2.75f;
-	float t2 = 0.0f;
-
-	if (t < 1.0f / d1) {
-		return n1 * t * t;
-
-	} else if (t < 2.0f / d1) {
-		t2 = t - 1.5f / d1;
-		return n1 * t2 * t2 + 0.75f;
-
-	} else if (t < 2.5f / d1) {
-		t2 = t - 2.25f / d1;
-		return n1 * t2 * t2 + 0.9375f;
-
-	} else {
-		t2 = t - 2.625f / d1;
-		return n1 * t2 * t2 + 0.984375f;
-	}
-}
-
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -156,7 +133,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector2 Player = {630.0f,315.0f};
 	Vector2 radius = { 15.0f,15.0f };
 	float moveY = 0.5f;	
-	int movepos = 0;
+	int Playermove = 0;
 
 	
 	Vector2 effect={ 630.0f,345.0f };
@@ -286,7 +263,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (keys[DIK_SPACE] && Easeingflge == 0) {
 			for (int i = 0; i < 6; i++) {
 				if (i == scenefi) {
-					movepos = 1;
+					Playermove = 1;
 					Easeingflge = 1;
 				}
 			}	
@@ -294,11 +271,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 		}
 
-		if (movepos == 1) {
+		if (Playermove == 1) {
 			Player.y += moveY;
 			if (Player.y >= 345.0f) {
 				Player.y = 345.0f;
-				movepos = 0;
+				Playermove = 0;
 				if (scenefi == 0) {
 					flag[0] = 1;			
 				} else if (scenefi == 1) {
@@ -314,11 +291,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				
 			}
-		}else if (movepos == 2) {
+		}else if (Playermove == 2) {
 			Player.y -= moveY;
 			if (Player.y <= 315.0f) {
 				Player.y = 315.0f;	
-				movepos = 0;
+				Playermove = 0;
 				if (scenefi == 0) {
 					inte = 0;
 					scenefi = 1;						
@@ -444,7 +421,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (t2[0] < 0.0f) {
 					t2[0] = 0.0f;
 					flag[1] = 0;			
-					movepos = 2;
+					Playermove = 2;
 				}
 
 
@@ -463,7 +440,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					effectradius.x -= 25.0f;
 					effectradius.y -= 25.0f;
 				} else {
-					movepos = 2;
+					Playermove = 2;
 				}
 			}
 
@@ -482,7 +459,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					BlockColor -= 5;
 				} 	
 				if (BlockColor >= 20) {
-					movepos = 2;
+					Playermove = 2;
 				}
 			}
 
@@ -495,18 +472,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			if (effect2t > 1.0f) {
 				effect2t = 1.0f;
-				movepos = 2;			
+				Playermove = 2;			
 			}		
 			
 			if (ghostplayerfigeX == 1) {				
 				ghosttX += (1.0f / 90.0f);	
 			}
+
 			if (ghostplayerfigeX == 1) {
 				ghostplayerX.x = (1.0f - EaseInOutQuint(ghosttX)) * ghoststartX.x + EaseInOutQuint(ghosttX) * ghostendX.x;
 			}
 			if (ghosttX > 1.0f) {
 				ghosttX = 1.0f;	
-				movepos = 2;
+				Playermove = 2;
 			}
 
 		
@@ -519,7 +497,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			if (ghosttY > 1.0f) {
 				ghosttY = 1.0f;		
-				movepos = 2;
+				Playermove = 2;
 			}
 
 
