@@ -6,11 +6,48 @@
 const char kWindowTitle[] = "LE2B_05_オノデラ_ユヅキ_タイトル";
 
 
+/* --- Sine --- */
+float EaseInSine(float t) {
+	return 1.0f - cosf((t * static_cast<float>(M_PI)) / 2.0f);
+}
+
+
 float EaseOutExpo(float t) {
 	return t == 1.0f
 		? 1.0f
 		: 1.0f - powf(2.0f, -10.0f * t);
 }
+
+float EaseInOutQuint(float t) {
+	return t < 0.5f
+		? 16.0f * t * t * t * t * t
+		: 1.0f - powf(-2.0f * t + 2.0f, 5.0f) / 2.0f;
+}
+
+
+//バウンド
+float EaseOutBounce(float t) {
+	const float n1 = 7.5625f;
+	const float d1 = 2.75f;
+	float t2 = 0.0f;
+
+	if (t < 1.0f / d1) {
+		return n1 * t * t;
+
+	} else if (t < 2.0f / d1) {
+		t2 = t - 1.5f / d1;
+		return n1 * t2 * t2 + 0.75f;
+
+	} else if (t < 2.5f / d1) {
+		t2 = t - 2.25f / d1;
+		return n1 * t2 * t2 + 0.9375f;
+
+	} else {
+		t2 = t - 2.625f / d1;
+		return n1 * t2 * t2 + 0.984375f;
+	}
+}
+
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -121,7 +158,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float moveY = 0.5f;	
 	int movepos = 0;
 
-	int Scene = 0;
+	
+	Vector2 effect={ 630.0f,345.0f };
+	Vector2 effectradius = { 10.0f,10.0f };
+
+	int effectfige = 0;
+	int scenefi = 0;
+	int time = 0;
+
+	int BlockColor = 0;
+	int BlockColorfige = 0;
+
+	Vector2 effect2 = { -200.0f,0.0f };
+	Vector2 effectradius2 = { 180.0f,720.0f };
+	Vector2 effectstart2 = { -200.0f,50.0f };
+	Vector2 effectend2 = { 1280.0f,0.0f };
+	int effectfige2 = 0;
+	float effect2t = 0.0f;
+
+	Vector2 wall = { -200.0f,0.0f };
+	Vector2 wallradius = { 180.0f,720.0f };
+
+	Vector2 ghostplayerX = { 630.0f,315.0f };
+	Vector2 ghoststartX = { 630.0f,315.0f };
+	Vector2 ghostendX = { 1910.0f,315.0f };
+	float ScrollX = 0;
+	float ghosttX = 0.0f;
+	int ghostplayerfigeX = 0;
+
+	Vector2 ghostplayerY = { 630.0f,315.0f };
+	Vector2 ghoststartY = { 630.0f,315.0f };
+	Vector2 ghostendY = { 630.0f,1035.0f };
+	float ScrollY = 0;
+	float ghosttY = 0.0f;
+	int ghostplayerfigeY = 0;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -138,32 +208,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (inte == 0) {
 
-			 fige = 0;
+			fige = 0;
 
-			 t[0] = { 0 }; t[1] = { 0 };	
-			 t2[0] = { 0 }; t2[1] = { 0 };
-			 flag[0] = { 0 };	 flag[1] = { 0 };
+			t[0] = { 0 }; t[1] = { 0 };
+			t2[0] = { 0 }; t2[1] = { 0 };
+			flag[0] = { 0 };	 flag[1] = { 0 };
 
+			TrianglePos1[0] = { 110.0f, -150.0f };
+			TrianglePos1[1] = { 150.0f, -150.0f };
+			TrianglePos1[2] = { 130.0f, -50.0f };
+			TrianglePos1[3] = { 130.0f, -50.0f };
 
-			 TrianglePos1[0] = { 110.0f, -150.0f };
-			 TrianglePos1[1] = { 150.0f, -150.0f };
-			 TrianglePos1[2] = { 130.0f, -50.0f };
-			 TrianglePos1[3] = { 130.0f, -50.0f };
+			TrianglePos2[0] = { 410.0f , -150.0f };
+			TrianglePos2[1] = { 450.0f , -150.0f };
+			TrianglePos2[2] = { 430.0f , -50.0f };
+			TrianglePos2[3] = { 430.0f , -50.0f };
 
-			 TrianglePos2[0] = { 410.0f , -150.0f };
-			 TrianglePos2[1] = { 450.0f , -150.0f };
-			 TrianglePos2[2] = { 430.0f , -50.0f };
-			 TrianglePos2[3] = { 430.0f , -50.0f };
+			TrianglePos3[0] = { 710.0f , -150.0f };
+			TrianglePos3[1] = { 750.0f , -150.0f };
+			TrianglePos3[2] = { 730.0f ,-50.0f };
+			TrianglePos3[3] = { 730.0f , -50.0f };
 
-			 TrianglePos3[0] = { 710.0f , -150.0f };
-			 TrianglePos3[1] = { 750.0f , -150.0f };
-			 TrianglePos3[2] = { 730.0f ,-50.0f };
-			 TrianglePos3[3] = { 730.0f , -50.0f };
-
-			 TrianglePos4[0] = { 1010.0f , -150.0f };
-			 TrianglePos4[1] = { 1050.0f , -150.0f };
-			 TrianglePos4[2] = { 1030.0f , -50.0f };
-			 TrianglePos4[3] = { 1030.0f , -50.0f };
+			TrianglePos4[0] = { 1010.0f , -150.0f };
+			TrianglePos4[1] = { 1050.0f , -150.0f };
+			TrianglePos4[2] = { 1030.0f , -50.0f };
+			TrianglePos4[3] = { 1030.0f , -50.0f };
 
 
 
@@ -193,34 +262,89 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					end[i].x = TrianglePos4[i].x + 1470.0f;
 				}
 			}
-			 Easeingflge = 0;
-			 sceneflge = 0;
-
-
+			Easeingflge = 0;
+			sceneflge = 0;
+		
 		}
 
-		
+		if (scenefi == 0 && t[0] == 1.0f) {
+			effect2.x = -200.0f; effect2.y = 0.0f;
+			effect2t = 0.0f;
+			wall.x = -200.0f; wall.y = 0.0f;
+			wallradius.x = 180.0f; wallradius.y = 720.0f;
+
+			ghostplayerX.x = 630.0f; ghostplayerX.y = 315.0f;
+			ghosttX = 0.0f;
+
+			ghostplayerY.x = 630.0f; ghostplayerY.y = 315.0f;
+			ghosttY = 0.0f;
+
+		};
+
 
 		
 		if (keys[DIK_SPACE] && Easeingflge == 0) {
-			movepos = 1;		
-			Easeingflge = 1;
-			inte = 1;
+			for (int i = 0; i < 6; i++) {
+				if (i == scenefi) {
+					movepos = 1;
+					Easeingflge = 1;
+				}
+			}	
+				inte = 1; 
+			
 		}
 
 		if (movepos == 1) {
 			Player.y += moveY;
 			if (Player.y >= 345.0f) {
 				Player.y = 345.0f;
-				flag[0] = 1;
 				movepos = 0;
+				if (scenefi == 0) {
+					flag[0] = 1;			
+				} else if (scenefi == 1) {
+					effectfige = 1;
+				} else if (scenefi == 2) {
+					BlockColorfige = 1;
+				} else if (scenefi == 3) {
+					effectfige2 = 1;
+				} else if (scenefi == 4) {
+					ghostplayerfigeX = 1;
+				} else if (scenefi == 5) {
+					ghostplayerfigeY = 1;
+				}
+				
 			}
-		}if (movepos == 2) {
+		}else if (movepos == 2) {
 			Player.y -= moveY;
 			if (Player.y <= 315.0f) {
 				Player.y = 315.0f;	
-				inte = 0;
 				movepos = 0;
+				if (scenefi == 0) {
+					inte = 0;
+					scenefi = 1;						
+				}else if (effectfige == 2 && scenefi == 1) {
+					inte = 0;
+					effectfige = 0;
+					scenefi = 2;					
+				} else if (BlockColorfige == 2 && scenefi == 2) {
+					inte = 0;
+					time = 0;
+					BlockColor = 0;
+					BlockColorfige = 0;
+					scenefi = 3;
+				} else if (effectfige2 == 1 && scenefi == 3) {
+					inte = 0;		
+					effectfige2 = 0;
+					scenefi = 4;
+				} else if (ghostplayerfigeX == 1 && scenefi == 4) {
+					inte = 0;
+					ghostplayerfigeX = 0;
+					scenefi = 5;
+				} else if (ghostplayerfigeY == 1 && scenefi == 5) {
+					inte = 0;
+					ghostplayerfigeY = 0;
+					scenefi = 0;
+				}
 			}
 		}
 
@@ -269,7 +393,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					flag[1] = 0;
 					Easeingflge = 2;
 					sceneflge = 1;
-					Scene++;
 				}
 
 			}
@@ -327,10 +450,88 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			}
 
-
-			if (Scene >= 2) {
-				Scene = 0;
+			if (effectfige == 1) {
+				if (effectradius.x <= 1500) {
+					effectradius.x += 25.0f;
+					effectradius.y += 25.0f;
+				} else if (effectradius.x >= 1500) {
+					effectfige = 2;
+				}
 			}
+			if (effectfige == 2) {
+				if (effectradius.x >= 10) {
+					effectradius.x -= 25.0f;
+					effectradius.y -= 25.0f;
+				} else {
+					movepos = 2;
+				}
+			}
+
+			if (BlockColorfige == 1) {
+				if (BlockColor <= 248) {
+					BlockColor += 7;
+				} else if (BlockColor >= 248) {
+					time++;
+					if (time >= 50) {
+						BlockColorfige = 2;
+					}
+				}
+			}
+			if (BlockColorfige == 2) {
+				if (BlockColor >= 5) {
+					BlockColor -= 5;
+				} 	
+				if (BlockColor >= 20) {
+					movepos = 2;
+				}
+			}
+
+			if (effectfige2 == 1) {
+				effect2t += (1.0f / 90.0f);		
+			}
+			wallradius.x = (effect2.x + 200.0f);	
+			if (effectfige2 == 1) {
+				effect2.x = (1.0f - EaseInOutQuint(effect2t)) * effectstart2.x + EaseInOutQuint(effect2t) * effectend2.x;
+			}
+			if (effect2t > 1.0f) {
+				effect2t = 1.0f;
+				movepos = 2;			
+			}		
+			
+			if (ghostplayerfigeX == 1) {				
+				ghosttX += (1.0f / 90.0f);	
+			}
+			if (ghostplayerfigeX == 1) {
+				ghostplayerX.x = (1.0f - EaseInOutQuint(ghosttX)) * ghoststartX.x + EaseInOutQuint(ghosttX) * ghostendX.x;
+			}
+			if (ghosttX > 1.0f) {
+				ghosttX = 1.0f;	
+				movepos = 2;
+			}
+
+		
+			if (ghostplayerfigeY == 1) {
+				ghosttY += (1.0f / 90.0f);
+			}
+
+			if (ghostplayerfigeY == 1) {
+				ghostplayerY.y = (1.0f - EaseInOutQuint(ghosttY)) * ghoststartY.y + EaseInOutQuint(ghosttY) * ghostendY.y;
+			}
+			if (ghosttY > 1.0f) {
+				ghosttY = 1.0f;		
+				movepos = 2;
+			}
+
+
+
+			if (ghostplayerX.x >= 630 && ghostplayerX.x <= 1910) {
+				ScrollX = ghostplayerX.x - 630.0f;
+			}
+
+			if (ghostplayerY.y >= 315 && ghostplayerY.y <= 1035) {
+				ScrollY = ghostplayerY.y - 315.0f;
+			}
+
 
 
 		///
@@ -341,34 +542,60 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		if (Scene == 1) {
-			Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0xAAAAAAAA, kFillModeSolid);
+			Novice::DrawBox(
+				1280 - (int)ScrollX,0 + (int)ScrollY,
+				1280,720,
+				0.0f, 0xAAAAAAAA, kFillModeSolid);
+			Novice::DrawBox(
+				1280 - (int)ScrollX, 0 - 720 + (int)ScrollY,
+				1280, 720,
+				0.0f, 0xAAAA00CC, kFillModeSolid);
+
+		
+		
+		Novice::DrawBox(
+			int(wall.x - ScrollX), int(wall.y),
+			int(wallradius.x), int(wallradius.y),
+			0.0f, 0x33AA33AA, kFillModeSolid);
+		
+		
+		
+		if (ghosttX == 0.0f || ghosttX == 1.0f) {
+			if (scenefi >= 1 && scenefi <= 4) {
+				Novice::DrawEllipse(
+					int(Player.x), int(Player.y),
+					int(radius.x), int(radius.y),
+					0.0f,
+					RED,
+					kFillModeSolid
+				);
+			}
+
+		}
+		if(ghosttY == 0.0f || ghosttY == 1.0f) {
+			if (scenefi >= 5 || scenefi == 0) {
+				Novice::DrawEllipse(
+					int(Player.x), int(Player.y),
+					int(radius.x), int(radius.y),
+					0.0f,
+					RED,
+					kFillModeSolid
+				);
+			}
+
 		}
 
 
-		if (Scene == 0) {
-			Novice::DrawEllipse(
-				int(Player.x), int(Player.y),
-				int(radius.x), int(radius.y),
-				0.0f,
-				RED,
-				kFillModeSolid
-			);
-		}else if (Scene == 1) {
-			Novice::DrawEllipse(
-				int(Player.x), int(Player.y),
-				int(radius.x), int(radius.y),
-				0.0f,
-				BLUE,
-				kFillModeSolid
-			);
-		}
+
+		Novice::DrawLine(0 - (int)ScrollX, 400 + (int)ScrollY, 1280 - (int)ScrollX, 400 + (int)ScrollY, BLACK);
+		Novice::DrawLine(1280 - (int)ScrollX, 400 + (int)ScrollY, 2560 - (int)ScrollX, 400 + (int)ScrollY, WHITE);
+		Novice::DrawLine(0 - (int)ScrollX, 400 - 720 + (int)ScrollY, 2560 - (int)ScrollX, 400 - 720 + (int)ScrollY, 0xDD0000FF);
 	
 		Novice::DrawQuad(
-			int(QuadPosA[0].x), int(QuadPosA[0].y),
-			int(QuadPosA[1].x), int(QuadPosA[1].y),
-			int(QuadPosA[2].x), int(QuadPosA[2].y),
-			int(QuadPosA[3].x), int(QuadPosA[3].y),
+			int(QuadPosA[0].x - ScrollX), int(QuadPosA[0].y+ ScrollY),
+			int(QuadPosA[1].x - ScrollX), int(QuadPosA[1].y+ ScrollY),
+			int(QuadPosA[2].x - ScrollX), int(QuadPosA[2].y+ ScrollY),
+			int(QuadPosA[3].x - ScrollX), int(QuadPosA[3].y+ ScrollY),
 			0, 0,
 			0, 0,
 			tex,
@@ -376,16 +603,80 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		);
 
 		Novice::DrawQuad(
-			int(QuadPosB[0].x), int(QuadPosB[0].y),
-			int(QuadPosB[1].x), int(QuadPosB[1].y),
-			int(QuadPosB[2].x), int(QuadPosB[2].y),
-			int(QuadPosB[3].x), int(QuadPosB[3].y),
+			int(QuadPosB[0].x - ScrollX), int(QuadPosB[0].y+ ScrollY),
+			int(QuadPosB[1].x - ScrollX), int(QuadPosB[1].y+ ScrollY),
+			int(QuadPosB[2].x - ScrollX), int(QuadPosB[2].y+ ScrollY),
+			int(QuadPosB[3].x - ScrollX), int(QuadPosB[3].y+ ScrollY),
 			0, 0,
 			0, 0,
 			tex,
 			WHITE
 		);
 
+
+		Novice::DrawQuad(
+			int(QuadPosA[0].x + 1280.0f - ScrollX), int(QuadPosA[0].y + ScrollY),
+			int(QuadPosA[1].x + 1280.0f - ScrollX), int(QuadPosA[1].y + ScrollY),
+			int(QuadPosA[2].x + 1280.0f - ScrollX), int(QuadPosA[2].y + ScrollY),
+			int(QuadPosA[3].x + 1280.0f - ScrollX), int(QuadPosA[3].y + ScrollY),
+			0, 0,
+			0, 0,
+			tex,
+			WHITE
+		);
+
+		Novice::DrawQuad(
+			int(QuadPosB[0].x + 1280.0f - ScrollX), int(QuadPosB[0].y + ScrollY),
+			int(QuadPosB[1].x + 1280.0f - ScrollX), int(QuadPosB[1].y + ScrollY),
+			int(QuadPosB[2].x + 1280.0f - ScrollX), int(QuadPosB[2].y + ScrollY),
+			int(QuadPosB[3].x + 1280.0f - ScrollX), int(QuadPosB[3].y + ScrollY),
+			0, 0,
+			0, 0,
+			tex,
+			WHITE
+		);
+
+
+		Novice::DrawQuad(
+			int(QuadPosA[0].x + 1280.0f - ScrollX), int(QuadPosA[0].y - 720.0f + ScrollY),
+			int(QuadPosA[1].x + 1280.0f - ScrollX), int(QuadPosA[1].y - 720.0f + ScrollY),
+			int(QuadPosA[2].x + 1280.0f - ScrollX), int(QuadPosA[2].y - 720.0f + ScrollY),
+			int(QuadPosA[3].x + 1280.0f - ScrollX), int(QuadPosA[3].y - 720.0f + ScrollY),
+			0, 0,
+			0, 0,
+			tex,
+			WHITE
+		);
+
+		Novice::DrawQuad(
+			int(QuadPosB[0].x + 1280.0f - ScrollX), int(QuadPosB[0].y - 720.0f + ScrollY),
+			int(QuadPosB[1].x + 1280.0f - ScrollX), int(QuadPosB[1].y - 720.0f + ScrollY),
+			int(QuadPosB[2].x + 1280.0f - ScrollX), int(QuadPosB[2].y - 720.0f + ScrollY),
+			int(QuadPosB[3].x + 1280.0f - ScrollX), int(QuadPosB[3].y - 720.0f + ScrollY),
+			0, 0,
+			0, 0,
+			tex,
+			WHITE
+		);
+
+
+		Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0xFFFFFF00 + BlockColor, kFillModeSolid);
+		
+		if (scenefi == 3) {
+			Novice::DrawBox(
+				int(effect2.x - ScrollX), int(effect2.y),
+				int(effectradius2.x), int(effectradius2.y),
+				0.0f, BLACK, kFillModeSolid);
+		}
+		
+		if (effectfige >= 1) {
+			Novice::DrawEllipse(
+				int(effect.x), int(effect.y),
+				int(effectradius.x), int(effectradius.y),
+				0.0f,
+				WHITE,
+				kFillModeSolid);
+		}
 
 
 			Novice::DrawQuad(
@@ -430,9 +721,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				BLACK
 			);
 
-		Novice::DrawLine(0,400,1280, 400,BLACK);
-
-
+	
 		///
 		/// ↑描画処理ここまで
 		///
